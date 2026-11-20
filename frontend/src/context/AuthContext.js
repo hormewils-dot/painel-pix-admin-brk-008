@@ -15,12 +15,16 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     // Hydrate immediately from cached user so a page refresh keeps the session.
+    let hadCache = false;
     try {
       const cached = localStorage.getItem(USER_KEY);
-      if (cached) setUser(JSON.parse(cached));
+      if (cached) {
+        setUser(JSON.parse(cached));
+        hadCache = true;
+      }
     } catch {}
-    setLoading(false);
-    // Revalidate in background; only log out on an actual auth rejection,
+    if (hadCache) setLoading(false);
+    // Revalidate; only log out on an actual auth rejection,
     // never on a transient network error.
     api
       .get("/auth/me")
@@ -35,6 +39,9 @@ export const AuthProvider = ({ children }) => {
           localStorage.removeItem(USER_KEY);
           setUser(null);
         }
+      })
+      .finally(() => {
+        if (!hadCache) setLoading(false);
       });
   }, []);
 

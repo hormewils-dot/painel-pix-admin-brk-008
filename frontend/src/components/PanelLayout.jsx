@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
+import { Routes, Route, Navigate, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   LayoutDashboard, FileText, Activity, Settings as SettingsIcon,
@@ -10,10 +11,10 @@ import Atividade from "../pages/Atividade";
 import Configuracoes from "../pages/Configuracoes";
 
 const TABS = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, testid: "nav-tab-dashboard" },
-  { id: "faturas", label: "Faturas Geradas", icon: FileText, testid: "nav-tab-faturas" },
-  { id: "atividade", label: "Atividade em Tempo Real", icon: Activity, testid: "nav-tab-atividade" },
-  { id: "configuracoes", label: "Configurações", icon: SettingsIcon, testid: "nav-tab-configuracoes" },
+  { to: "dashboard", label: "Dashboard", icon: LayoutDashboard, testid: "nav-tab-dashboard" },
+  { to: "faturas", label: "Faturas Geradas", icon: FileText, testid: "nav-tab-faturas" },
+  { to: "atividade", label: "Atividade em Tempo Real", icon: Activity, testid: "nav-tab-atividade" },
+  { to: "configuracoes", label: "Configurações", icon: SettingsIcon, testid: "nav-tab-configuracoes" },
 ];
 
 const useTheme = () => {
@@ -29,17 +30,7 @@ const useTheme = () => {
 
 export default function PanelLayout() {
   const { user, logout } = useAuth();
-  const [tab, setTab] = useState("dashboard");
   const [theme, toggleTheme] = useTheme();
-
-  const render = useCallback(() => {
-    switch (tab) {
-      case "faturas": return <Faturas />;
-      case "atividade": return <Atividade />;
-      case "configuracoes": return <Configuracoes />;
-      default: return <Dashboard goToTab={setTab} />;
-    }
-  }, [tab]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -94,27 +85,37 @@ export default function PanelLayout() {
           <nav className="flex gap-1 overflow-x-auto -mb-px">
             {TABS.map((t) => {
               const Icon = t.icon;
-              const active = tab === t.id;
               return (
-                <button
-                  key={t.id}
+                <NavLink
+                  key={t.to}
+                  to={t.to}
                   data-testid={t.testid}
-                  onClick={() => setTab(t.id)}
-                  className={`flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                    active
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                      isActive
+                        ? "border-primary text-primary"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`
+                  }
                 >
                   <Icon size={16} /> {t.label}
-                </button>
+                </NavLink>
               );
             })}
           </nav>
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1400px] px-4 sm:px-6 py-6">{render()}</main>
+      <main className="mx-auto max-w-[1400px] px-4 sm:px-6 py-6">
+        <Routes>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="faturas" element={<Faturas />} />
+          <Route path="atividade" element={<Atividade />} />
+          <Route path="configuracoes" element={<Configuracoes />} />
+          <Route path="*" element={<Navigate to="dashboard" replace />} />
+        </Routes>
+      </main>
     </div>
   );
 }

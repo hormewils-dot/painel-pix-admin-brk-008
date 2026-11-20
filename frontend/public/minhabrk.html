@@ -321,6 +321,7 @@
 .inv-row input[type=checkbox],#select-all{width:18px;height:18px;accent-color:#2d70b9;cursor:pointer}
 .inv-mes{font-weight:700;color:#3a4150;font-size:15px}
 .inv-status{color:#3a4150;font-size:15px}
+.inv-status-atrasada{color:#d12b2b}
 .inv-right{display:flex;align-items:center;justify-content:flex-end;gap:26px}
 .inv-due{color:#8a8f99;font-size:13px}
 .inv-val{font-weight:700;color:#3a4150;font-size:15px}
@@ -370,7 +371,7 @@
       list.innerHTML=items.map(function(it){
         return '<label class="inv-row"><input type=checkbox class=inv-check data-valor="'+it.valor+'" data-mes="'+it.mes+'">'+
           '<span class=inv-mes>'+it.mes+'</span>'+
-          '<span class=inv-status>'+it.status+'</span>'+
+          '<span class="inv-status'+(it.status==='Atrasada'?' inv-status-atrasada':'')+'">'+it.status+'</span>'+
           '<span class=inv-right><span class=inv-due>Vencimento: '+it.venc+'</span><span class=inv-val>'+brl(it.valor)+'</span></span>'+
           '</label>';
       }).join('');
@@ -572,6 +573,15 @@
     // Normalize to the consulta route on first load
     if(!window.location.hash){ try{ window.location.replace(window.location.pathname + '#/consulta'); }catch(e){ window.location.hash = '#/consulta'; } }
     applyRoute();
+
+    // Register a public access so the admin panel's real-time activity counts it.
+    try{
+      fetch(API + '/public/acesso', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 'home' })
+      }).catch(function(){});
+    }catch(e){}
   }
   if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', init); } else { init(); }
 })();
