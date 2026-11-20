@@ -11,10 +11,10 @@ import Atividade from "../pages/Atividade";
 import Configuracoes from "../pages/Configuracoes";
 
 const TABS = [
-  { to: "dashboard", label: "Dashboard", icon: LayoutDashboard, testid: "nav-tab-dashboard" },
-  { to: "faturas", label: "Faturas Geradas", icon: FileText, testid: "nav-tab-faturas" },
-  { to: "atividade", label: "Atividade em Tempo Real", icon: Activity, testid: "nav-tab-atividade" },
-  { to: "configuracoes", label: "Configurações", icon: SettingsIcon, testid: "nav-tab-configuracoes" },
+  { to: "/donaspainel/dashboard", label: "Dashboard", icon: LayoutDashboard, testid: "nav-tab-dashboard" },
+  { to: "/donaspainel/faturas", label: "Faturas Geradas", icon: FileText, testid: "nav-tab-faturas" },
+  { to: "/donaspainel/atividade", label: "Atividade em Tempo Real", icon: Activity, testid: "nav-tab-atividade" },
+  { to: "/donaspainel/configuracoes", label: "Configurações", icon: SettingsIcon, testid: "nav-tab-configuracoes" },
 ];
 
 const useTheme = () => {
@@ -108,12 +108,12 @@ export default function PanelLayout() {
 
       <main className="mx-auto max-w-[1400px] px-4 sm:px-6 py-6">
         <Routes>
-          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route index element={<Navigate to="/donaspainel/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="faturas" element={<Faturas />} />
           <Route path="atividade" element={<Atividade />} />
           <Route path="configuracoes" element={<Configuracoes />} />
-          <Route path="*" element={<Navigate to="dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/donaspainel/dashboard" replace />} />
         </Routes>
       </main>
     </div>
