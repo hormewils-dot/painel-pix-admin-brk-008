@@ -103,6 +103,9 @@
  <div style="display:flex;justify-content:center;margin:10px 0 4px">
  <button type=button class=continue id=pay-copy>📋 Copiar Pix Copia e Cola</button>
  </div>
+ <div style="display:flex;justify-content:center;margin:12px 0 4px">
+ <button type=button id=pay-back style="background:none;border:0;color:#2d70b9;font-size:15px;font-weight:600;cursor:pointer;font-family:Quicksand,sans-serif">← Voltar</button>
+ </div>
  </div>
  </section>
  </div>
@@ -559,6 +562,14 @@
         }, wait);
       });
     });
+
+    var backBtn = document.getElementById('pay-back');
+    if(backBtn){
+      backBtn.addEventListener('click', function(){
+        window.location.hash = '#/faturas';
+        applyRoute();
+      });
+    }
 
     if(copyBtn){
       copyBtn.addEventListener('click', function(){
